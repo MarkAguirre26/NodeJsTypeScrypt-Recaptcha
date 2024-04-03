@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reCAPTCHA prototype</title>
+    <!-- Include the reCAPTCHA API script -->
+  <style>
+    #error-message {       
+       
+        color: #8a0404; /* Dark red text */
+        font-family: Arial, sans-serif; /* Choose a suitable font */
+        /* visibility: block; */
+        text-align: center; /* Center the text */
+    }
+
+</style>
+
+</head>
+<body>
+    <h1>reCAPTCHA prototype</h1>
+    <form id="myForm">
+        <div class="g-recaptcha" data-sitekey="6Lf50XQpAAAAAO-SrCiQXO8Fs1m-1KrLm7FK7tGK"></div><br>
+      
+        <div id="error-message"></div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script async src="https://www.google.com/recaptcha/api.js" ></script>
+
+    <script>
+
+   displayErrorMessage(false,'');
+
+   document.getElementById("myForm").addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+        const recaptchaToken = grecaptcha.getResponse();
+        grecaptcha.reset();
+        const formData = new URLSearchParams({ recaptchaToken: recaptchaToken});
+
+        try {
+
+            const response = await fetch('http://localhost:3000/verify', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });      
+            
+            const data = await response.json();
+            
+            //execute if response  success = false
+            if (!data.success) {
+                const errorMessage = data.statusText;
+                displayErrorMessage(true,errorMessage);  
+                throw new Error(errorMessage);       
+            }else{
+                console.log('Validation: ',data.success);
+            }            
+            //execute if response  success = true
+
+
+        } catch (error) {
+            console.error('Client side error', error);
+        }
+    });
+
+
+function displayErrorMessage(shouldDisplay,errorMessage) {
+
+    if(shouldDisplay){    
+        document.getElementById("error-message").innerText = errorMessage;        
+             setTimeout(() => {
+                    document.getElementById("error-message").innerText = "";
+                    
+            }, 3000);
+    }else{
+        document.getElementById("error-message").innerText = "";
+    }
+
+}
+
+
+
+    </script>
+    
+</body>
+</html>

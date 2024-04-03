@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fetch POST Request</title>
+
+<style>
+    #error-message {       
+       
+        color: #8a0404; /* Dark red text */
+        font-family: Arial, sans-serif; /* Choose a suitable font */
+        /* visibility: block; */
+        text-align: center; /* Center the text */
+    }
+    .g-recaptcha {
+            width: 300px; /* Set your desired width */
+            height: 80px; /* Set your desired height */
+        }
+
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=setRecaptchaWidgetSetting&render=explicit" async defer></script>
+
+
+
+</head>
+<body>
+
+    <form id="myForm">
+        <div id="recaptcha-container" class="g-recaptcha" ></div>                 
+        <div id="error-message"></div>
+        <button type="submit" id="submitButton" disabled>Submit</button>
+    </form>
+
+<script>
+// let siteKey = '';
+
+
+
+
+    // Explicit rendering of reCAPTCHA
+    // function renderRecaptcha() {
+
+    //     fetchAndLogResponse();
+
+    //     grecaptcha.render('recaptcha-container', {
+    //             'sitekey': siteKey,
+    //             'callback': recaptchaCallback,               
+    //             'theme': 'light',
+    //             'hl': 'en'
+    //     });
+    // }
+
+// ---------------------------------------
+async function setRecaptchaWidgetSetting() {
+    const url = 'https://iepio69jmh.execute-api.eu-central-1.amazonaws.com/SIT/api/captcha-validator/external/captcha';
+    const headers = { 'getsecret': 'wala' };
+
+    try {
+        const response = await fetch(url, { method: 'POST', headers });
+        const siteKeyReponse = await response.text();   
+       
+        grecaptcha.render('recaptcha-container', {
+                'sitekey': siteKeyReponse,
+                'callback': recaptchaCallback,               
+                'theme': 'light',
+                'hl': 'en'
+        });
+
+    } catch (error) {
+        console.error('Error occurred during fetch operation:', error);
+        throw error; // Re-throw the error to propagate it
+    }
+}
+
+
+function recaptchaCallback(){
+    alert("test");
+}
+
+
+</script>
+
+</body>
+</html>

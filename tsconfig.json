@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",                                /* Specify what module code is generated. */  
+    "moduleResolution": "NodeNext",                                      /* Enable all strict type-checking options. */
+    "target": "ESNext", 
+    "esModuleInterop": true,
+    "resolveJsonModule": true,                                 /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "sourceMap": true,
+    "outDir": "dist",
+    "types": ["node","jest"]
+  },
+  "include": ["src/**/*"],
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reCAPTCHA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .g-recaptcha {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>reCAPTCHA Prototype</h2>
+
+  <form id="myForm">
+    <button class="g-recaptcha" 
+            data-sitekey="6Leeo4QpAAAAAA-xBvOSRH8PfFW3NIJMyNxpneRb" 
+            data-callback="onSubmit" 
+            data-action="submit">Submit</button>
+  </form>
+</div>
+
+<script>
+  function onSubmit(token) {
+
+    const formData = new URLSearchParams();
+    formData.append('g-recaptcha-response', token);
+
+    fetch('http://localhost:3000/verify', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        console.log('Success', data);
+      } else {
+        console.error('Server side error', data);
+      }
+    })
+    .catch(error => {
+      console.error('Client side error', error);
+    });
+  }
+</script>
+
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6Leeo4QpAAAAAA-xBvOSRH8PfFW3NIJMyNxpneRb" async defer></script>
+
+</body>
+</html>
